@@ -1,0 +1,17 @@
+[project]
+name = "reader"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "wqd23", email = "wqd23@mails.tsinghua.edu.cn" }
+]
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+reader = "reader:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
