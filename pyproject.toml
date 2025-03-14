@@ -8,6 +8,8 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "crcmod>=1.7",
+    "matplotlib>=3.10.1",
     "numpy>=2.2.3",
 ]
 
@@ -17,3 +19,8 @@ reader = "reader:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+]
