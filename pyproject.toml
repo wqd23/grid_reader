@@ -7,7 +7,9 @@ authors = [
     { name = "wqd23", email = "wqd23@mails.tsinghua.edu.cn" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "numpy>=2.2.3",
+]
 
 [project.scripts]
 reader = "reader:main"
