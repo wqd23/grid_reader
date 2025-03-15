@@ -1,25 +1,12 @@
-from .GRID_A_QuickProcess import read_raw
 import numpy as np
+
+from .GRID_A_QuickProcess import read_raw
 from .parse_grid_data import parse_grid_data_new
-
-from typing import TypedDict
-
-
-class SciGrid(TypedDict):
-    amp: np.ndarray
-    channel: np.ndarray
-    utc: np.ndarray
+from .utils import disk_cache
 
 
-class TelGrid(TypedDict):
-    temp: np.ndarray  # C
-    bias: np.ndarray  # V
-    current: np.ndarray  # uA
-    utc: np.ndarray
+from .types import SciGrid, Tel4Ch, ArrayDict
 
-
-Tel4Ch = tuple[TelGrid, TelGrid, TelGrid, TelGrid]
-ArrayDict = dict[str, np.ndarray]
 # -------------------------GRID: A type-------------------------#
 
 
@@ -41,11 +28,42 @@ def correct_A_tel(tel: ArrayDict) -> Tel4Ch:
     return data
 
 
-def readA(filename: str) -> tuple[tuple[SciGrid, Tel4Ch], tuple[ArrayDict, ArrayDict]]:
+@disk_cache(cache_dir=".cache")
+def readA(
+    filename: str, rtype="sci"
+) -> tuple[SciGrid, Tel4Ch] | tuple[ArrayDict, ArrayDict]:
+    """
+    Read GRID A type data from a file.
+
+    Parameters
+    ----------
+    filename : str
+        The file name of the data file.
+    rtype : str, optional
+        The type of the returned data. Should be in {"sci", "raw"}.
+        "sci" returns the processed data in SciGrid and Tel4Ch.
+        "raw" returns the raw data in ArrayDict.
+        Default is "sci".
+
+    Returns
+    -------
+    data : tuple[SciGrid, Tel4Ch]
+        processed data
+    OR
+    raw_data : tuple[ArrayDict, ArrayDict]
+        raw data from the file
+    """
+
     raw_sci, raw_tel = read_raw(filename)
     sci = correct_A_sci(raw_sci)
     tel = correct_A_tel(raw_tel)
-    return (sci, tel), (raw_sci, raw_tel)
+    match rtype:
+        case "sci":
+            return sci, tel
+        case "raw":
+            return raw_sci, raw_tel
+        case _:
+            raise ValueError(f"unknown type: {rtype}, should be in {'sci', 'raw'}")
 
 
 # -------------------------GRID: B type-------------------------#
@@ -90,7 +108,8 @@ def correct_11B_sci(sci: ArrayDict) -> SciGrid:
     return data
 
 
-def read11B(filename: str, dtype="feat") -> tuple[SciGrid | Tel4Ch, ArrayDict]:
+@disk_cache(cache_dir=".cache")
+def read11B(filename: str, dtype="feat", rtype="sci") -> SciGrid | Tel4Ch | ArrayDict:
     """
     Read GRID B type data from a file.
 
@@ -101,11 +120,13 @@ def read11B(filename: str, dtype="feat") -> tuple[SciGrid | Tel4Ch, ArrayDict]:
     dtype : str, optional
         The type of the data. Should be in {"feat", "wave", "hk"}.
         Default is "feat".
-
+    rtype : str, optional
+        The type of the returned data. Should be in {"sci", "raw"}.
     Returns
     -------
     data : SciGrid | Tel4Ch
         processed data
+    OR
     raw_data : ArrayDict
         raw data from the file
     """
@@ -118,12 +139,19 @@ def read11B(filename: str, dtype="feat") -> tuple[SciGrid | Tel4Ch, ArrayDict]:
     assert xml is not None, (
         f"unknown version: {filename}, should be in {list(B_XML.keys())}"
     )
-    raw_data = parse_grid_data_new(filename, xml_file=xml, data_tag=tag, endian=ENDIAN)[
-        0
-    ]
+    raw_data = parse_grid_data_new(filename, xml_file=xml, data_tag=tag, endian=ENDIAN)
+    raw_data = raw_data[0]
+
     match dtype:
         case "hk":
             data = correct_11B_tel(raw_data)
         case _:
             data = correct_11B_sci(raw_data)
-    return data, raw_data
+
+    match rtype:
+        case "sci":
+            return data
+        case "raw":
+            return raw_data
+        case _:
+            raise ValueError(f"unknown type: {rtype}, should be in {'sci', 'raw'}")
