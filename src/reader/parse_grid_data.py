@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 import re
 import h5py
 from datetime import datetime,timedelta
-from parity_check import crc16_xmodem_nd, bcc_nd
+from .parity_check import crc16_xmodem_nd, bcc_nd
 import pandas as pd
 
 

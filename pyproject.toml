@@ -9,8 +9,10 @@ authors = [
 requires-python = ">=3.12"
 dependencies = [
     "crcmod>=1.7",
+    "h5py>=3.13.0",
     "matplotlib>=3.10.1",
-    "numpy>=2.2.3",
+    "numba>=0.61.0",
+    "pandas>=2.2.3",
 ]
 
 [project.scripts]
