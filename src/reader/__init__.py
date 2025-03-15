@@ -20,6 +20,23 @@ ENDIAN = "MSB"
 
 
 def read11B(filename: str, dtype="feat"):
+    """
+    Read GRID B type data from a file.
+
+    Parameters
+    ----------
+    filename : str
+        The file name of the data file.
+    dtype : str, optional
+        The type of the data. Should be in {"feat", "wave"}.
+        Default is "feat".
+
+    Returns
+    -------
+    data : dict
+        A dict containing the data. The keys are the data names, and the values
+        are the data arrays.
+    """
     VER = "11B"
     tag = DATA_TAGS.get(dtype, None)
     assert tag is not None, (
