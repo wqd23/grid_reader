@@ -31,11 +31,12 @@ def assert_sci_shape(d: dict):
 
 
 def test_07A(Afile):
-    sci, tel = readA(Afile)
+    sci, tel = readA(Afile)[1]
     assert_tel_shape(tel)
+    assert tel["utc"].shape[0] == 28
     assert_sci_shape(sci)
-
+    assert sci["utc"].shape[0] == 488
 def test_plot(Afile):
-    sci, tel = readA(Afile)
+    sci, tel = readA(Afile)[1]
     from reader.GRID_A_QuickProcess import plot_spec
     plot_spec(sci, "name", "show")
