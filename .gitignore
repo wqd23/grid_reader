@@ -16,3 +16,4 @@ tests/data
 # cache
 .cache
 
+reader.log

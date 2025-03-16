@@ -11,7 +11,7 @@ def wavefile():
 
 
 def test_11B_wave(wavefile):
-    data = read11B(wavefile, "wave")[1]
+    data = read11B(wavefile, "wave", "raw")
     s = get_shape(data)
     assert len(set(map(lambda x: x[0], s.values()))) == 1
     assert s["header"][0] == 46406
@@ -29,7 +29,7 @@ def assert_first_shape(s):
 
 
 def test_11B_hk(hkfile):
-    data = read11B(hkfile, "hk")[1]
+    data = read11B(hkfile, "hk", "raw")
     s = get_shape(data)
     assert s["header"][0] == 174
     assert_first_shape(s)
