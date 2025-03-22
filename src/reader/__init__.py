@@ -1,3 +1,4 @@
+from importlib.resources import files
 import numpy as np
 
 from .GRID_A_QuickProcess import read_raw
@@ -67,7 +68,10 @@ def readA(
 
 
 # -------------------------GRID: B type-------------------------#
-B_XML = {"11B": "src/reader/frame/grid_packet_11B.xml"}
+
+frame = files("reader.frame")
+
+B_XML = {"11B": frame.joinpath("grid_packet_11B.xml")}
 DATA_TAGS = {
     "feat": "grid1x_ft_packet",
     "wave": "grid1x_wf_packet",
